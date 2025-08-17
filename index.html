@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso Interactivo: Algoritmos de Búsqueda en IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .graph-node {
+            transition: all 0.3s ease-in-out;
+        }
+        .graph-node-text {
+            pointer-events: none;
+            user-select: none;
+        }
+        .graph-edge {
+            transition: all 0.3s ease-in-out;
+        }
+        .content-section {
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .content-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            main {
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+            .content-section {
+                border-bottom: 1px solid #ccc;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <main id="course-content" class="container mx-auto p-4 sm:p-6 md:p-8 bg-white shadow-lg rounded-lg my-8">
+        
+        <!-- Header -->
+        <header class="text-center border-b pb-4 mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">Modelos de Inteligencia Artificial</h1>
+            <h2 class="text-2xl font-semibold text-indigo-600 mt-2">Unidad Didáctica: Algoritmos de Búsqueda para la Toma de Decisiones Inteligentes</h2>
+            <button id="download-pdf-btn" class="no-print mt-6 bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300">
+                Descargar como PDF
+            </button>
+        </header>
+
+        <!-- 1. Contexto del Curso -->
+        <section class="content-section">
+            <h3 class="text-3xl font-bold mb-4 text-indigo-800">1. Contexto del Curso</h3>
+            <p class="text-lg">Esta unidad forma parte del módulo de <strong>Modelos de Inteligencia Artificial</strong> dentro de un programa de especialización en Inteligencia Artificial y Big Data. Los algoritmos de búsqueda son la base para la resolución de una amplia gama de problemas en IA y son fundamentales para el diseño de sistemas inteligentes. Se espera que los estudiantes posean conocimientos previos en lógica proposicional, álgebra declarativa, reglas de inferencia, así como manejo de estructuras de datos como listas, árboles y grafos, y nociones básicas de teoría de la probabilidad.</p>
+        </section>
+
+        <!-- 2. Objetivos de Aprendizaje -->
+        <section class="content-section">
+            <h3 class="text-3xl font-bold mb-4 text-indigo-800">2. Objetivos de Aprendizaje</h3>
+            <ul class="list-disc list-inside space-y-3 text-lg">
+                <li>Comprender la definición y la importancia de los algoritmos de búsqueda como herramientas de toma de decisiones en sistemas de IA.</li>
+                <li>Identificar y diferenciar las características, ventajas y desventajas de los algoritmos de búsqueda no informada e informada.</li>
+                <li>Conocer los principales algoritmos de cada categoría (BFS, DFS, A*, etc.) y su funcionamiento interno.</li>
+                <li>Aplicar los conceptos a la resolución de problemas prácticos en diversos dominios, incluyendo el ámbito empresarial.</li>
+                <li>Analizar las implicaciones éticas y los desafíos asociados al uso de algoritmos en la toma de decisiones automatizadas.</li>
+            </ul>
+        </section>
+
+        <!-- 3. Contenidos de la Unidad -->
+        <section class="content-section">
+            <h3 class="text-3xl font-bold mb-6 text-indigo-800">3. Contenidos de la Unidad</h3>
+            
+            <!-- 3.1 Introducción -->
+            <article class="mb-8">
+                <h4 class="text-2xl font-semibold mb-3">3.1. Introducción a los Algoritmos de Búsqueda en IA</h4>
+                <p class="mb-4">Un <strong>algoritmo de búsqueda</strong> es un conjunto de instrucciones diseñadas para localizar un elemento con propiedades específicas o encontrar la solución óptima a un problema. Son la "fórmula de toma de decisiones" de una herramienta de IA, vitales desde la resolución de problemas computacionales hasta la toma de decisiones sofisticadas en logística.</p>
+                <div class="bg-gray-50 p-4 rounded-lg border">
+                    <h5 class="font-bold mb-2">Elementos clave de un algoritmo de búsqueda:</h5>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Estado inicial:</strong> El punto de partida del problema.</li>
+                        <li><strong>Acciones u operadores:</strong> Las transiciones válidas que definen el espacio de estados posibles.</li>
+                        <li><strong>Espacio de estados:</strong> El conjunto de todas las configuraciones posibles del problema.</li>
+                        <li><strong>Test de meta (objetivo):</strong> La condición que define una solución al problema.</li>
+                        <li><strong>Costos de ruta:</strong> El esfuerzo o los recursos necesarios para realizar cada acción.</li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- 3.2 Búsqueda No Informada -->
+            <article class="mb-8">
+                <h4 class="text-2xl font-semibold mb-3">3.2. Algoritmos de Búsqueda No Informada (Ciega)</h4>
+                <p class="mb-4">Estrategias que se basan únicamente en la estructura del problema, sin utilizar información adicional. Son "ciegas" porque no saben si un estado es mejor que otro. Exploran sistemáticamente y pueden implicar un costo computacional elevado.</p>
+                <div class="space-y-4">
+                    <details class="bg-white p-4 rounded-lg border cursor-pointer">
+                        <summary class="font-semibold">Búsqueda en Anchura (BFS)</summary>
+                        <p class="mt-2">Explora nivel por nivel, garantizando encontrar la solución más corta en profundidad. Es completo y robusto, utilizando una cola (FIFO).</p>
+                    </details>
+                    <details class="bg-white p-4 rounded-lg border cursor-pointer">
+                        <summary class="font-semibold">Búsqueda en Profundidad (DFS)</summary>
+                        <p class="mt-2">Explora tan profundamente como sea posible a lo largo de una rama. Requiere menos memoria (usa una pila LIFO), pero no garantiza la solución óptima.</p>
+                    </details>
+                    <details class="bg-white p-4 rounded-lg border cursor-pointer">
+                        <summary class="font-semibold">Búsqueda de Costo Uniforme (UCS)</summary>
+                        <p class="mt-2">Expande nodos en función del costo acumulado desde el inicio, encontrando la ruta óptima en términos de costo.</p>
+                    </details>
+                     <details class="bg-white p-4 rounded-lg border cursor-pointer">
+                        <summary class="font-semibold">Otras variantes</summary>
+                        <p class="mt-2"><strong>Búsqueda en Profundidad Limitada (DLS)</strong>, <strong>Búsqueda en Profundidad Iterativa (ID-DFS)</strong> y <strong>Búsqueda Bidireccional</strong> son otras estrategias con sus propias ventajas y casos de uso.</p>
+                    </details>
+                </div>
+            </article>
+
+            <!-- 3.3 Búsqueda Informada -->
+            <article class="mb-12">
+                <h4 class="text-2xl font-semibold mb-3">3.3. Algoritmos de Búsqueda Informada (Heurística)</h4>
+                <p class="mb-4">Utilizan información adicional (heurísticas) para guiar la búsqueda y priorizar las rutas más prometedoras. Una <strong>heurística h(n)</strong> es una función que estima el costo para alcanzar el objetivo desde un estado 'n'.</p>
+                <div class="space-y-4">
+                     <details class="bg-white p-4 rounded-lg border cursor-pointer">
+                        <summary class="font-semibold">Búsqueda Voraz (Greedy Best-First)</summary>
+                        <p class="mt-2">Selecciona el siguiente nodo basándose únicamente en la estimación heurística más baja (el que "parece" más cercano). Es rápido pero no garantiza la optimalidad.</p>
+                    </details>
+                    <details class="bg-white p-4 rounded-lg border cursor-pointer">
+                        <summary class="font-semibold">Algoritmo A* (A-Star)</summary>
+                        <p class="mt-2">Combina el costo real acumulado desde el inicio <strong>g(n)</strong> con la estimación heurística <strong>h(n)</strong>. Evalúa nodos con la función <strong>f(n) = g(n) + h(n)</strong>. Es completo, óptimo y uno de los algoritmos más eficientes si la heurística es admisible.</p>
+                    </details>
+                </div>
+            </article>
+
+            <!-- Interactive Graph Visualization -->
+            <section class="mb-12 no-print">
+                <h4 class="text-2xl font-semibold mb-4 text-center">Visualizador de Algoritmos</h4>
+                <div class="bg-gray-50 p-4 rounded-lg border">
+                    <svg id="graph-visualization" class="w-full h-96"></svg>
+                    <div class="mt-4 flex flex-wrap gap-3 justify-center">
+                        <div class="flex items-center gap-2">
+                            <label for="start-node-select" class="font-medium">Inicio:</label>
+                            <select id="start-node-select" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label for="goal-node-select" class="font-medium">Objetivo:</label>
+                            <select id="goal-node-select" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></select>
+                        </div>
+                        <button id="reset-btn" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600">Reiniciar</button>
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-3 justify-center">
+                        <button data-algo="bfs" class="run-algo-btn bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600">Ejecutar BFS</button>
+                        <button data-algo="dfs" class="run-algo-btn bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600">Ejecutar DFS</button>
+                        <button data-algo="greedy" class="run-algo-btn bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600">Ejecutar Greedy</button>
+                        <button data-algo="astar" class="run-algo-btn bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600">Ejecutar A*</button>
+                    </div>
+                    <div id="status-panel" class="mt-4 text-center font-mono p-3 bg-gray-200 rounded-md min-h-[4rem] overflow-y-auto">
+                        Selecciona un algoritmo para empezar.
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 3.4 Aplicaciones Prácticas -->
+            <article class="mb-8">
+                <h4 class="text-2xl font-semibold mb-3">3.4. Aplicaciones Prácticas y Estudios de Caso</h4>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Optimización de Rutas:</strong> Crucial en logística para encontrar rutas eficientes (ej. GPS, reparto).</li>
+                    <li><strong>Asignación de Recursos Humanos:</strong> Métodos heurísticos para asignar personal idóneo a proyectos.</li>
+                    <li><strong>Sistemas de Recomendación:</strong> Netflix, Amazon, etc., usan algoritmos para personalizar la experiencia del usuario.</li>
+                    <li><strong>Diagnóstico Médico y Finanzas:</strong> Ayudan en la detección de anomalías y en el análisis de datos.</li>
+                    <li><strong>Videojuegos y Robótica:</strong> Para la inteligencia de agentes y la navegación en entornos complejos.</li>
+                </ul>
+            </article>
+
+            <!-- 3.5 Consideraciones Éticas -->
+            <article>
+                <h4 class="text-2xl font-semibold mb-3">3.5. Consideraciones Éticas y Desafíos</h4>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Sesgos y Discriminación:</strong> Los algoritmos pueden perpetuar sesgos presentes en los datos de entrenamiento.</li>
+                    <li><strong>Invasión de la Vida Privada:</strong> El procesamiento masivo de datos genera preocupaciones sobre la privacidad.</li>
+                    <li><strong>Complejidad Computacional:</strong> Muchos problemas reales son difíciles de resolver en tiempos aceptables.</li>
+                    <li><strong>Precisión de las Heurísticas:</strong> La calidad de la búsqueda informada depende de la precisión de su heurística.</li>
+                    <li><strong>Intervención Humana:</strong> La supervisión humana sigue siendo crucial para problemas complejos.</li>
+                </ul>
+            </article>
+        </section>
+
+        <!-- 4. Metodología Didáctica -->
+        <section class="content-section">
+            <h3 class="text-3xl font-bold mb-4 text-indigo-800">4. Metodología Didáctica</h3>
+            <p>La unidad se desarrollará a través de una combinación de clases teóricas, sesiones prácticas en laboratorio y análisis de casos reales, fomentando la discusión sobre los desafíos éticos y el uso de herramientas de visualización para comprender mejor el funcionamiento de los algoritmos.</p>
+        </section>
+
+        <!-- 5. Actividades de Aprendizaje y Evaluación -->
+        <section class="content-section">
+            <h3 class="text-3xl font-bold mb-4 text-indigo-800">5. Actividades de Aprendizaje y Evaluación</h3>
+            <p>La evaluación se basará en la participación en clase, ejercicios de programación, análisis de casos prácticos, creación de mapas conceptuales y un examen final teórico-práctico que abarque todos los conceptos de la unidad.</p>
+        </section>
+
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- PDF Download ---
+        const downloadBtn = document.getElementById('download-pdf-btn');
+        downloadBtn.addEventListener('click', () => {
+            const element = document.getElementById('course-content');
+            const opt = {
+                margin:       0.5,
+                filename:     'curso_algoritmos_busqueda.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
+
+        // --- Interactive Graph ---
+        const svg = document.getElementById('graph-visualization');
+        const statusPanel = document.getElementById('status-panel');
+        const startNodeSelect = document.getElementById('start-node-select');
+        const goalNodeSelect = document.getElementById('goal-node-select');
+        const resetBtn = document.getElementById('reset-btn');
+        const runAlgoButtons = document.querySelectorAll('.run-algo-btn');
+        let isRunning = false;
+
+        const graph = {
+            nodes: {
+                'A': { x: 10, y: 50, h: 10 }, 'B': { x: 35, y: 20, h: 7 },
+                'C': { x: 35, y: 80, h: 8 }, 'D': { x: 65, y: 20, h: 4 },
+                'E': { x: 65, y: 80, h: 6 }, 'F': { x: 90, y: 50, h: 2 },
+                'G': { x: 75, y: 50, h: 0 }
+            },
+            edges: [
+                { from: 'A', to: 'B', cost: 4 }, { from: 'A', to: 'C', cost: 3 },
+                { from: 'B', to: 'D', cost: 5 }, { from: 'B', to: 'G', cost: 10 },
+                { from: 'C', to: 'E', cost: 8 }, { from: 'C', to: 'G', cost: 9 },
+                { from: 'D', to: 'F', cost: 2 }, { from: 'E', to: 'F', cost: 5 },
+                { from: 'G', to: 'F', cost: 3 }
+            ]
+        };
+        
+        // Populate select options
+        Object.keys(graph.nodes).forEach(nodeId => {
+            startNodeSelect.innerHTML += `<option value="${nodeId}">${nodeId}</option>`;
+            goalNodeSelect.innerHTML += `<option value="${nodeId}">${nodeId}</option>`;
+        });
+        startNodeSelect.value = 'A';
+        goalNodeSelect.value = 'G';
+
+        function drawGraph() {
+            svg.innerHTML = '';
+            const width = svg.clientWidth;
+            const height = svg.clientHeight;
+
+            // Draw edges
+            graph.edges.forEach(edge => {
+                const n1 = graph.nodes[edge.from];
+                const n2 = graph.nodes[edge.to];
+                const x1 = n1.x / 100 * width;
+                const y1 = n1.y / 100 * height;
+                const x2 = n2.x / 100 * width;
+                const y2 = n2.y / 100 * height;
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', '#9ca3af');
+                line.setAttribute('stroke-width', '2');
+                line.id = `edge-${edge.from}-${edge.to}`;
+                svg.appendChild(line);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', (x1 + x2) / 2 + 5);
+                text.setAttribute('y', (y1 + y2) / 2 - 5);
+                text.textContent = edge.cost;
+                text.setAttribute('fill', '#4b5563');
+                text.setAttribute('font-size', '14');
+                svg.appendChild(text);
+            });
+
+            // Draw nodes
+            Object.entries(graph.nodes).forEach(([id, node]) => {
+                const x = node.x / 100 * width;
+                const y = node.y / 100 * height;
+
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', '20');
+                circle.setAttribute('fill', '#d1d5db');
+                circle.setAttribute('stroke', '#6b7280');
+                circle.setAttribute('stroke-width', '2');
+                circle.id = `node-${id}`;
+                circle.classList.add('graph-node');
+                svg.appendChild(circle);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x);
+                text.setAttribute('y', y);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dy', '.3em');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('font-size', '18');
+                text.textContent = id;
+                text.classList.add('graph-node-text');
+                svg.appendChild(text);
+
+                const heuristicText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                heuristicText.setAttribute('x', x + 22);
+                heuristicText.setAttribute('y', y - 22);
+                heuristicText.setAttribute('font-size', '12');
+                heuristicText.setAttribute('fill', 'green');
+                heuristicText.textContent = `h=${node.h}`;
+                svg.appendChild(heuristicText);
+            });
+        }
+        
+        function resetVisualization() {
+            isRunning = false;
+            Object.keys(graph.nodes).forEach(id => {
+                document.getElementById(`node-${id}`).setAttribute('fill', '#d1d5db');
+            });
+            graph.edges.forEach(edge => {
+                 const line = document.getElementById(`edge-${edge.from}-${edge.to}`) || document.getElementById(`edge-${edge.to}-${edge.from}`);
+                 if(line) line.setAttribute('stroke', '#9ca3af');
+            });
+            statusPanel.innerHTML = 'Selecciona un algoritmo para empezar.';
+            runAlgoButtons.forEach(b => b.disabled = false);
+        }
+
+        async function animateStep(type, data, delay = 500) {
+            if (!isRunning) throw new Error("Animation stopped");
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    switch (type) {
+                        case 'visit':
+                            document.getElementById(`node-${data}`).setAttribute('fill', '#60a5fa'); // blue-400
+                            statusPanel.innerHTML = `Visitando nodo: <strong>${data}</strong>`;
+                            break;
+                        case 'expand':
+                            document.getElementById(`node-${data}`).setAttribute('fill', '#f87171'); // red-400
+                             statusPanel.innerHTML = `Expandiendo nodo: <strong>${data}</strong>`;
+                            break;
+                        case 'path':
+                            document.getElementById(`node-${data}`).setAttribute('fill', '#34d399'); // emerald-400
+                            break;
+                        case 'edge':
+                            const edgeEl = document.getElementById(`edge-${data.from}-${data.to}`) || document.getElementById(`edge-${data.to}-${data.from}`);
+                            if(edgeEl) edgeEl.setAttribute('stroke', '#34d399');
+                            break;
+                        case 'frontier':
+                            statusPanel.innerHTML += `<br>Frontera: [${data.join(', ')}]`;
+                            break;
+                        case 'found':
+                             document.getElementById(`node-${data}`).setAttribute('fill', '#34d399');
+                             statusPanel.innerHTML = `¡Objetivo <strong>${data}</strong> encontrado!`;
+                            break;
+                        case 'notfound':
+                             statusPanel.innerHTML = `Objetivo no encontrado.`;
+                            break;
+                    }
+                    statusPanel.scrollTop = statusPanel.scrollHeight;
+                    resolve();
+                }, delay);
+            });
+        }
+        
+        function getNeighbors(nodeId) {
+            const neighbors = [];
+            graph.edges.forEach(edge => {
+                if (edge.from === nodeId) neighbors.push({node: edge.to, cost: edge.cost});
+                if (edge.to === nodeId) neighbors.push({node: edge.from, cost: edge.cost});
+            });
+            return neighbors;
+        }
+
+        async function runAlgorithm(algo) {
+            if (isRunning) return;
+            resetVisualization();
+            isRunning = true;
+            runAlgoButtons.forEach(b => b.disabled = true);
+
+            const startNode = startNodeSelect.value;
+            const goalNode = goalNodeSelect.value;
+            
+            try {
+                const visited = new Set();
+                const parent = {};
+
+                switch (algo) {
+                    case 'bfs': {
+                        const queue = [startNode];
+                        visited.add(startNode);
+                        while (queue.length > 0) {
+                            const currentNode = queue.shift();
+                            await animateStep('expand', currentNode);
+                            if (currentNode === goalNode) {
+                                await animateStep('found', currentNode);
+                                break;
+                            }
+                            const neighbors = getNeighbors(currentNode);
+                            for (const neighbor of neighbors) {
+                                if (!visited.has(neighbor.node)) {
+                                    visited.add(neighbor.node);
+                                    parent[neighbor.node] = currentNode;
+                                    queue.push(neighbor.node);
+                                    await animateStep('visit', neighbor.node);
+                                }
+                            }
+                            await animateStep('frontier', queue);
+                        }
+                        break;
+                    }
+                    case 'dfs': {
+                        const stack = [startNode];
+                        while(stack.length > 0) {
+                            const currentNode = stack.pop();
+                            if (!visited.has(currentNode)) {
+                                visited.add(currentNode);
+                                parent[currentNode] = stack.length > 0 && parent[currentNode] === undefined ? stack[stack.length-1] : parent[currentNode];
+                                await animateStep('expand', currentNode);
+                                if (currentNode === goalNode) {
+                                    await animateStep('found', currentNode);
+                                    break;
+                                }
+                                const neighbors = getNeighbors(currentNode).reverse();
+                                for (const neighbor of neighbors) {
+                                    if (!visited.has(neighbor.node)) {
+                                        parent[neighbor.node] = currentNode;
+                                        stack.push(neighbor.node);
+                                    }
+                                }
+                                await animateStep('frontier', stack);
+                            }
+                        }
+                        break;
+                    }
+                    case 'greedy': {
+                        const priorityQueue = [{ node: startNode, priority: graph.nodes[startNode].h }];
+                        visited.add(startNode);
+                        while (priorityQueue.length > 0) {
+                            priorityQueue.sort((a, b) => a.priority - b.priority);
+                            const { node: currentNode } = priorityQueue.shift();
+                            await animateStep('expand', currentNode);
+                            if (currentNode === goalNode) {
+                                await animateStep('found', currentNode);
+                                break;
+                            }
+                            const neighbors = getNeighbors(currentNode);
+                            for (const neighbor of neighbors) {
+                                if (!visited.has(neighbor.node)) {
+                                    visited.add(neighbor.node);
+                                    parent[neighbor.node] = currentNode;
+                                    priorityQueue.push({ node: neighbor.node, priority: graph.nodes[neighbor.node].h });
+                                    await animateStep('visit', neighbor.node);
+                                }
+                            }
+                            await animateStep('frontier', priorityQueue.map(i => `${i.node}(${i.priority})`));
+                        }
+                        break;
+                    }
+                    case 'astar': {
+                        const priorityQueue = [{ node: startNode, g: 0, f: graph.nodes[startNode].h }];
+                        const gScore = {};
+                        Object.keys(graph.nodes).forEach(node => gScore[node] = Infinity);
+                        gScore[startNode] = 0;
+
+                        while (priorityQueue.length > 0) {
+                            priorityQueue.sort((a, b) => a.f - b.f);
+                            const { node: currentNode, g: currentG } = priorityQueue.shift();
+                            
+                            if (visited.has(currentNode)) continue;
+                            visited.add(currentNode);
+                            await animateStep('expand', currentNode);
+
+                            if (currentNode === goalNode) {
+                                await animateStep('found', currentNode);
+                                break;
+                            }
+                            
+                            const neighbors = getNeighbors(currentNode);
+                            for (const neighbor of neighbors) {
+                                const tentativeGScore = currentG + neighbor.cost;
+                                if (tentativeGScore < gScore[neighbor.node]) {
+                                    parent[neighbor.node] = currentNode;
+                                    gScore[neighbor.node] = tentativeGScore;
+                                    const fScore = tentativeGScore + graph.nodes[neighbor.node].h;
+                                    priorityQueue.push({ node: neighbor.node, g: tentativeGScore, f: fScore });
+                                    await animateStep('visit', neighbor.node);
+                                }
+                            }
+                            await animateStep('frontier', priorityQueue.map(i => `${i.node}(${i.f})`));
+                        }
+                        break;
+                    }
+                }
+
+                // Animate path
+                if (visited.has(goalNode)) {
+                    let current = goalNode;
+                    const path = [];
+                    while(current) {
+                        path.unshift(current);
+                        current = parent[current];
+                    }
+                    for (let i = 0; i < path.length; i++) {
+                        await animateStep('path', path[i], 100);
+                        if (i > 0) {
+                            await animateStep('edge', {from: path[i-1], to: path[i]}, 100);
+                        }
+                    }
+                } else if (isRunning) {
+                    await animateStep('notfound', null);
+                }
+
+            } catch (e) {
+                console.log("Animation was stopped.");
+            } finally {
+                isRunning = false;
+                runAlgoButtons.forEach(b => b.disabled = false);
+            }
+        }
+        
+        runAlgoButtons.forEach(button => {
+            button.addEventListener('click', () => runAlgorithm(button.dataset.algo));
+        });
+        resetBtn.addEventListener('click', resetVisualization);
+        
+        // Initial draw
+        drawGraph();
+        window.addEventListener('resize', drawGraph);
+    });
+    </script>
+</body>
+</html>
